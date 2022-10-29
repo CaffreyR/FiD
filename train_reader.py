@@ -45,6 +45,13 @@ def train(model, optimizer, scheduler, step, train_dataset, eval_dataset, opt, c
     model.train()
     while step < opt.total_steps:
         epoch += 1
+        n_layers, n_heads = 12, 12
+        head_importance = torch.zeros(n_layers, n_heads).to(opt.device)
+        attn_entropy = torch.zeros(n_layers, n_heads).to(opt.device)
+        head_mask = torch.ones(n_layers, n_heads).to(opt.device)
+        head_mask.requires_grad_(requires_grad=True)
+        decoder_head_mask = torch.ones(n_layers, n_heads).to(opt.device)
+        decoder_head_mask.requires_grad_(requires_grad=True)
         for i, batch in enumerate(train_dataloader):
             step += 1
             (idx, labels, _, context_ids, context_mask) = batch
