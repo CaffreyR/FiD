@@ -49,11 +49,14 @@ def train(model, optimizer, scheduler, step, train_dataset, eval_dataset, opt, c
             step += 1
             (idx, labels, _, context_ids, context_mask) = batch
 
-            train_loss = model(
+            outputs = model(
                 input_ids=context_ids.cuda(),
                 attention_mask=context_mask.cuda(),
-                labels=labels.cuda()
-            )[0]
+                labels=labels.cuda(),
+                return_dict=True,
+                head_mask=head_mask,
+                decoder_head_mask=decoder_head_mask
+            )
 
             train_loss.backward()
 
